@@ -8,6 +8,7 @@ export default class App extends Component {
 		this.state = {
 			email: "",
 			password: "",
+			hasAccount: false,
 		};
 	}
 	componentDidMount() {
@@ -19,24 +20,45 @@ export default class App extends Component {
 		this.setState({ [id]: value });
 	};
 
+	createAccount = () => {
+		const { email, password } = this.state;
+		firebase
+			.auth()
+			.createUserWithEmailAndPassword(email, password)
+			.catch((error) => console.log(error));
+
+		firebase
+			.auth()
+			.signInWithEmailAndPassword(email, password)
+			.then((Response) => {
+				this.setState({ hasAccount: true });
+			})
+			.catch((error) => console.log(error));
+	};
+
 	render() {
+		const { hasAccount } = this.state;
 		return (
 			<div>
-				<div className="login_block">
-					<input
-						type="text"
-						id="email"
-						placeholder="email"
-						onChange={this.handleChange}
-					/>
-					<input
-						type="password"
-						id="password"
-						placeholder="password"
-						onChange={this.handleChange}
-					/>
-					<input type="submit" />
-				</div>
+				{hasAccount ? (
+					<div>Hello</div>
+				) : (
+					<div className="login_block">
+						<input
+							type="text"
+							id="email"
+							placeholder="email"
+							onChange={this.handleChange}
+						/>
+						<input
+							type="password"
+							id="password"
+							placeholder="password"
+							onChange={this.handleChange}
+						/>
+						<input type="submit" onClick={this.createAccount} />
+					</div>
+				)}
 			</div>
 		);
 	}
