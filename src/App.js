@@ -10,6 +10,8 @@ export default class App extends Component {
 			password: "",
 			hasAccount: false,
 			name: "",
+			key: '',
+			value: '',
 		};
 	}
 	componentDidMount() {
@@ -40,12 +42,21 @@ export default class App extends Component {
 			.catch((error) => console.log(error));
 	};
 
+	sendData = () => {
+		const { key, value } = this.state
+		const db = firebase.database()
+		db.ref(key).push(value)
+	};
 	render() {
 		const { hasAccount } = this.state;
 		return (
 			<div>
 				{hasAccount ? (
-					<div>Hello</div>
+					<div>
+						<input type="text" id="key" placeholder="enter key" onChange = {this.handleChange} />
+						<input type="text" id="value" placeholder="enter value" onChange = {this.handleChange} />
+						<input type="submit" onClick={this.sendData} />
+					</div>
 				) : (
 					<div className="login_block">
 						<input
