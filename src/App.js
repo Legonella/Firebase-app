@@ -9,11 +9,15 @@ export default class App extends Component {
 			email: "",
 			password: "",
 			hasAccount: false,
+			name: "",
 		};
 	}
 	componentDidMount() {
-		const DB = firebase.database;
-		console.log(DB);
+		const db = firebase.database;
+		const name = db.ref("name");
+		name.on("value", (elem) => {
+			this.setState({ name: elem.val() });
+		});
 	}
 
 	handleChange = ({ target: { value, id } }) => {
@@ -30,7 +34,7 @@ export default class App extends Component {
 		firebase
 			.auth()
 			.signInWithEmailAndPassword(email, password)
-			.then((Response) => {
+			.then(() => {
 				this.setState({ hasAccount: true });
 			})
 			.catch((error) => console.log(error));
